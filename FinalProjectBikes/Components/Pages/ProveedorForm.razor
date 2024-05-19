@@ -1,0 +1,94 @@
+﻿@page "/proveedores/nueva"
+@page "/proveedores/editar/{Id:int}"
+@rendermode InteractiveServer
+@inject NavigationManager _navigator;
+@inject IRepositorioProveedor _repositorioProveedor;
+<h2>@_mensaje Cliente</h2>
+
+<EditForm Model="_proveedor" FormName="frmPersona" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="row mb-3">
+        <label for="txtNombre" class="col-2 col-form-label">Nombre</label>
+        <div class="col-10">
+            <InputText id="txtNombre" class="form-control" @bind-Value="_proveedor.NameProveedor" />
+            <ValidationMessage For="()=>_proveedor.Name" />
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label for="txtTelefono" class="col-2 col-form-label">Teléfono</label>
+        <div class="col-10">
+            <InputText id="txtTelefono" class="form-control" @bind-Value="_proveedor.PhoneNumberProveedor" />
+            <ValidationMessage For="()=>_proveedor.PhoneNumber" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="txtCorreo" class="col-2 col-form-label">Direction</label>
+        <div class="col-10">
+            <InputText id="txtCorreo" class="form-control" @bind-Value="_proveedor.DirectionProveedor" />
+            <ValidationMessage For="()=>_proveedor.Email" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="txtbicicleta" class="col-2 col-form-label">Modelo de Bicicleta</label>
+        <div class="col-10">
+            <InputText id="txtbicicleta" class="form-control" @bind-Value="_proveedor.ModelBikeProveedor" />
+            <ValidationMessage For="()=>_proveedor.ModelBike" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="txtCorreo" class="col-2 col-form-label">Direction</label>
+        <div class="col-10">
+            <InputText id="txtCorreo" class="form-control" @bind-Value="_proveedor.PriceProveedor" />
+            <ValidationMessage For="()=>_proveedor.PriceProveedor" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="txtCorreo" class="col-2 col-form-label">Direction</label>
+        <div class="col-10">
+            <InputText id="txtCorreo" class="form-control" @bind-Value="_proveedor.AmountProveedor" />
+            <ValidationMessage For="()=>_proveedor.AmountProveedor" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <button class="btn btn-danger ms-3" @onclick="Cancelar" @onclick:preventDefault>Cancelar</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private string _mensaje = "";
+    private Proveedor? _proveedor = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id > 0)
+        {
+            _proveedor = await _repositorioProveedor.Get(Id);
+            _mensaje = "Modificar";
+        }
+        else
+        {
+            _mensaje = "Neva";
+        }
+    }
+
+    private async void Guardar()
+    {
+        if (Id > 0)
+        {
+            await _repositorioProveedor.Update(Id, _proveedor!);
+        }
+        else
+        {
+            await _repositorioProveedor.Add(_proveedor!);
+        }
+        Cancelar();
+    }
+
+    private void Cancelar()
+    {
+        _navigator.NavigateTo("/proveedor");
+    }
+}
